@@ -1,6 +1,6 @@
 start      = statements / other
 
-statements = ff:function+ { return ff }
+statements = ff:(function/comment)+ { console.log(ff); return ff }
 
 function   = space f:( 'function' space name space '(' space ')' space curly ) space 
              { return [].concat.apply([], f).join('') }
@@ -15,3 +15,8 @@ name       = t:text+
 text       = [a-zA-Z0-9-._]
 
 space      = [ \n]* / !.
+
+comment    = single / multi
+
+single    = '//' [^\n]* [\n] { return 'comment' }
+multi     = '/*' [^'*/']* '*/' { return 'comment' }

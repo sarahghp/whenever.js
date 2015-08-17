@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 var _     = require('lodash'),
     fs    = require('fs'),
     path  = require('path'),
@@ -31,6 +33,14 @@ function getFuncFromString(str) {
   });
 }
 
+function convertPredicate(pred){
+  return _.isString(pred) ? _.includes(workingArr, fn) : pred;
+}
+
+function convertFn(fn){
+  return _.isString(fn) ? getFuncFromString(fn) : fn;
+}
+
 function add(fn, times){
   var times = times || 1,
       fn    = getFuncFromString(fn);
@@ -50,24 +60,28 @@ function remove(fn, times){
   });
 }
 
-function defer(check, times, cb) {
-  if(timesCalled[check] > times) {
-     _.isString(cb) ? getFuncFromString(cb)() : cb();
+function defer(predicate, fn) {
+  var fn        = convertFn(fn),
+      predicate = convertPredicate(predicate);
+
+  if (!predicate) {
+    fn();
   }
+
 }
 
 function again(predicate, fn){
-  var fn        = _.isString(fn) ? getFuncFromString(fn) : fn,
-      predicate = _.isString(predicate) ? _.includes(workingArr, fn) : predicate;
-      
+  var fn        = convertFn(fn),
+      predicate = convertPredicate(predicate);      
+
   if (predicate){
     fn();
     workingArr.push(fn);
   } else {
     fn();
   }
-
 }
+
 
 function N(fn) {
  return _.filter(workingArr, function(el){
@@ -79,11 +93,13 @@ function N(fn) {
 // Start whenevering!
  
 function deStringify(arr) {
+  var toMap = _.pull(arr, 'comment');
   return _.map(arr, function(el){
     eval('var moo = ' + el);
     timesCalled[moo.name] = 0;
     return moo;
   });
+
 }
 
 function run(arr) {

@@ -1,5 +1,11 @@
+// This makes a fun loop that never ends
+
 function teeth() { 
- console.log('Bite with teeth');
+  console.log('Bite with teeth');
+}
+
+function count() {
+  console.log('teeth', N('teeth'));
 }
 
 function moo() {
@@ -18,8 +24,4 @@ function roof() {
    add("teeth");
    add("moo");
  }
-}
-
-function count() {
- console.log('teeth', N('teeth'));
 }

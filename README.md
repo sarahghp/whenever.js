@@ -15,7 +15,7 @@ In Whenever, functions are added to an execution bag and then executed in random
 #### Statements
 The base of a whenever.js program is the simple statement. This is an argument-less function declaration (not assignment!):
 
-```
+```js
 function name() { ... }
 ```
 
@@ -24,6 +24,16 @@ When this statement is executed, the function will run. If you would like access
 
 ~~var~~ `variable = value;`
 
+#### Comments
+
+Whenever accepts Javascript style comments
+
+```js
+// Single line
+
+/* And also
+   multiline!! */
+```
 
 #### Built-in Functions
 
@@ -57,10 +67,10 @@ Removes given number of copies from execution bag. If the number is greater than
 
 ##### Defer
 ```js
-defer('functionToBeExecutedFirstAsString', #numberoftimestoexecute, function(){} OR 'functionNameAsString')
+defer(predicate, function(){} OR 'functionNameAsString')
 ```
 
-Defer will refrain from running the callback until the named function has been executed the given number of times.
+Defer will refrain from running the callback until the predicate returns false. The predicate can be simply the name of a function as well as any boolean options. If a function name is passed, it will return true as long a copy of the function exists in the execution bag.
 
 ##### Again
 ```js
@@ -90,7 +100,7 @@ Will return the number of times the named function has been executed.
 Install whenever globally via npm:
 
 ```
-npm install whenver.js -g
+npm install whenever.js -g
 ```
 
 Compile by running:
