@@ -1,6 +1,6 @@
 start      = statements / other
 
-statements = ff:(function/comment)+ { console.log(ff); return ff }
+statements = ff:(function/comment)+ { return ff }
 
 function   = space f:( 'function' space name space '(' space ')' space curly ) space 
              { return [].concat.apply([], f).join('') }
