@@ -2,17 +2,33 @@
 
 An adaptation and implementation of [Whenever](http://www.dangermouse.net/esoteric/whenever.html) into Javascript. 
 
-The biggest divergence from the original implementation is that whenever.js uses function declarations instead of statements and refers to them by their name string as opposed to by statement number.
+* [About](#about)  
+* [Writing a Program ](#writing-a-program)  
+  - [Statements](#statements)  
+  - [Comments](#comments)  
+* [Built-In Functions](#built-in-functions)  
+  - [Add](#add)  
+  - [Remove](#remove)  
+  - [Defer](#defer)  
+  - [Again](#again)  
+  - [N](#N)  
+* [Installing & Running the Program](#installing--running-the-program)
 
-## Using Whenever
+## About
+
+The biggest divergence from the original implementation is that whenever.js uses function declarations instead of statements and refers to them by their name string as opposed to by statement number. This way, we have access to all of the host Javascript's functionality at a snap, including the ability to declare global variables and access them from various statements.
+
+The ultimate goal for this implementation is to be used as the engine for a text-adventure game.
+
+If you are interested in a true-to-syntax implementation Whenever, check out [Fredrik Hallenberg's repo](https://github.com/megahallon/whenever).
+
+## Writing a Program
 
 Whenever is an esolang playing with the idea of control flow. How do you write a program when statements are called out of sync?
 
 In Whenever, functions are added to an execution bag and then executed in random order. That's pretty much it. Functions are removed from the bag on execution unless otherwise directed by in-built functions (see below).
 
-### Writing a Program
-
-#### Statements
+### Statements
 The base of a whenever.js program is the simple statement. This is an argument-less function declaration (not assignment!):
 
 ```js
@@ -24,7 +40,7 @@ When this statement is executed, the function will run. If you would like access
 
 ~~var~~ `variable = value;`
 
-#### Comments
+### Comments
 
 Whenever accepts Javascript style comments
 
@@ -35,7 +51,7 @@ Whenever accepts Javascript style comments
    multiline!! */
 ```
 
-#### Built-in Functions
+## Built-in Functions
 
 Whenever.js includes most Whenever standard functions (except U()). In this case, they are called as normal Javascript functions within a statement. For instance:
 
@@ -51,28 +67,28 @@ function addMonsters() {
 }
 ```
 
-##### Add
+### Add
 ```js
 add('functionNameAsString', #oftimes)
 ```
 
 Adds given number of copies to the execution bag.
 
-##### Remove
+### Remove
 ```js
 remove('functionNameAsString', #oftimes)
 ```
 
 Removes given number of copies from execution bag. If the number is greater than number of copies, it will leave 0.
 
-##### Defer
+### Defer
 ```js
 defer(predicate, function(){} OR 'functionNameAsString')
 ```
 
 Defer will refrain from running the callback until the predicate returns false. The predicate can be simply the name of a function as well as any boolean options. If a function name is passed, it will return true as long a copy of the function exists in the execution bag.
 
-##### Again
+### Again
 ```js
 again(predicate, function(){} OR 'functionNameAsString')
 ```
@@ -88,14 +104,14 @@ function keepMonstersGoing() {
 ```
 
 
-##### N
+### N
 ```js
 N('functionNameAsString')
 ```
 
 Will return the number of times the named function has been executed.
 
-### Installing & Running the Program
+## Installing & Running the Program
 
 Install whenever globally via npm:
 
@@ -108,5 +124,5 @@ Compile by running:
 anytime <path/to/file/name.we>
 ```
 
-### License
+## License
 [MIT](LICENSE.md)
