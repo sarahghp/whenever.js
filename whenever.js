@@ -2,9 +2,10 @@
 
 var _     = require('lodash'),
     fs    = require('fs'),
+    util  = require('util'),
     path  = require('path'),
     PEG   = require('pegjs'),
-    cli  = require('commander');
+    cli   = require('commander');
 
 cli
   .version('0.0.1')
@@ -34,7 +35,7 @@ function getFuncFromString(str) {
 }
 
 function convertPredicate(pred){
-  return _.isString(pred) ? _.includes(workingArr, fn) : pred;
+  return _.isString(pred) ? _.includes(workingArr, pred) : pred;
 }
 
 function convertFn(fn){
