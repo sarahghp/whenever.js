@@ -87,14 +87,13 @@ Removes given number of copies from execution bag. If the number is greater than
 defer(predicate, function(){} OR 'functionNameAsString')
 ```
 
-Defer will refrain from running the callback until the predicate returns false. The predicate can be simply the name of a function as well as any boolean options. If a function name is passed, it will return true as long a copy of the function exists in the execution bag.
+`defer` will refrain from running the callback until the predicate returns false. The predicate can be a boolean value, or the name of a statement (which will be interpreted as `N(statement) > 0`). If a function name is passed, it will return true as long a copy of the function exists in the execution bag.
 
 ### Again
 ```js
 again(predicate, function(){} OR 'functionNameAsString')
 ```
-
-If the predicate given to again is true, the callback statement is executed but remains in the bag, to be executed again some time later. If the argument is false, the statement is executed and removed from the to-do list as normal.
+The first argument to `again` is a predicate, which can be either a boolean value or a statement name (which will be interpreted as `N(statement) > 0`). If the predicate is true, the callback statement is executed but remains in the bag, to be executed again some time later. If the argument is false, the statement is executed and removed from the to-do list as normal.
 
 The predicate can be simply the name of a function as well as other boolean options. Writing the following, for instance, would execute `monster` as long as `teeth` has not been executed and removed:
 
