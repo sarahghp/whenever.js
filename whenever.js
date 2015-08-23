@@ -26,12 +26,11 @@ var grammar = fs.readFileSync(__dirname + '/lib/grammar.txt').toString(),
 
 // Built-in whenever funcs
 
-var timesCalled = {};
+var master = {},
+    addOnce = 0;
 
 function getFuncFromString(str) {
-  return _.find(baseArray, function(el){
-    return el.name === str;
-  });
+  return master[str].fn;
 }
 
 function convertPredicate(pred){
@@ -42,51 +41,54 @@ function convertFn(fn){
   return _.isString(fn) ? getFuncFromString(fn) : fn;
 }
 
-function add(fn, times){
-  var times = times || 1,
-      fn    = getFuncFromString(fn);
+function add(fnName, times){
+  var times = times || 1;
   
   _.times(times, function(){
-    workingArr.push(fn);
+    workingArr.push(fnName);
   });
 }
 
-function remove(fn, times){
+function remove(fnName, times){
+  var times = times || 1;
   _.times(times, function(){
     var idx = _.findIndex(workingArr, function(el){
-      return el.name === fn;
+      return el === fnName;
     });
 
     workingArr.splice(idx, 1);
   });
 }
 
-function defer(predicate, fn) {
+function defer(predicate, fn, statement) {
   var fn        = convertFn(fn),
       predicate = convertPredicate(predicate);
 
   if (!predicate) {
     fn();
-  }
-
-}
-
-function again(predicate, fn){
-  var fn        = convertFn(fn),
-      predicate = convertPredicate(predicate);      
-
-  if (predicate){
-    fn();
-    workingArr.push(fn);
   } else {
-    fn();
+    if (!addOnce){
+      workingArr.push(statement);
+      addOnce++;
+    }
+    
+  }
+
+}
+
+function again(predicate, fnName){
+  var predicate = convertPredicate(predicate);      
+
+  if (predicate && !addOnce){
+    workingArr.push(fnName);
+    addOnce++;
   }
 }
 
 
-function N(fn) {
+function N(fnName) {
  return _.filter(workingArr, function(el){
-  return el.name === fn;
+  return el === fnName;
  }).length;
 }
 
@@ -94,38 +96,40 @@ function N(fn) {
 // Start whenevering!
  
 function deStringify(arr) {
-  var toMap = _.pull(arr, 'comment');
-  return _.map(arr, function(el){
+  var cleaned = _.pull(arr, 'comment');
+
+  _.forEach(cleaned, function(el){
     eval('var moo = ' + el);
-    timesCalled[moo.name] = 0;
-    return moo;
+    master[moo.name] = {
+      fn: moo,
+      timesCalled: 0
+    };
   });
+
+  return Object.keys(master);
 
 }
 
 function run(arr) {
 
   var length = arr.length;
+  addOnce = 0;
 
   if (!length){
     console.log('FIN: THE BAG IS EMPTY');
     return;
   }
 
-  workingArr = arr;
-
-  var num = Math.floor(Math.random() * length),
-      chosen = _.pullAt(workingArr, num)[0];
+  var num = Math.floor(Math.random() * length);
+  var chosen = master[_.pullAt(workingArr, 0)[0]].fn;
 
   chosen();
-  timesCalled[chosen.name]++;
+  master[chosen.name].timesCalled++;
   run(workingArr);
   
 }
 
 // ACTION
 
-var baseArray = deStringify(bag),
-    workingArr; // this mutates and is not to be trusted!
-
-run(baseArray.slice()); // call run on a copy of the base array
+var workingArr = deStringify(bag); // this mutates and is not to be trusted!
+run(workingArr);
