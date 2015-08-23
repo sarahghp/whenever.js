@@ -71,9 +71,7 @@ function defer(predicate, fn, statement) {
       workingArr.push(statement);
       addOnce++;
     }
-    
   }
-
 }
 
 function again(predicate, fnName){
@@ -107,29 +105,24 @@ function deStringify(arr) {
   });
 
   return Object.keys(master);
-
 }
 
-function run(arr) {
+function run() {
+  while(workingArr.length) {
+    addOnce = 0;
 
-  var length = arr.length;
-  addOnce = 0;
+    var randIndex = Math.floor(Math.random() * workingArr.length),
+        randFn = master[_.pullAt(workingArr, randIndex)[0]].fn;
 
-  if (!length){
-    console.log('FIN: THE BAG IS EMPTY');
-    return;
+    randFn();
+    master[randFn.name].timesCalled++;
   }
 
-  var num = Math.floor(Math.random() * length);
-  var chosen = master[_.pullAt(workingArr, num)[0]].fn;
-
-  chosen();
-  master[chosen.name].timesCalled++;
-  run(workingArr);
-  
+  console.log('FIN: THE BAG IS EMPTY');
 }
+
 
 // ACTION
 
 var workingArr = deStringify(bag); // this mutates and is not to be trusted!
-run(workingArr);
+run();
