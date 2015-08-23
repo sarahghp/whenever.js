@@ -121,7 +121,7 @@ function run(arr) {
   }
 
   var num = Math.floor(Math.random() * length);
-  var chosen = master[_.pullAt(workingArr, 0)[0]].fn;
+  var chosen = master[_.pullAt(workingArr, num)[0]].fn;
 
   chosen();
   master[chosen.name].timesCalled++;

@@ -13,6 +13,7 @@ An adaptation and implementation of [Whenever](http://www.dangermouse.net/esoter
   - [Again](#again)  
   - [N](#N)  
 * [Installing & Running the Program](#installing--running-the-program)
+* [Examples](#examples)
 
 ## About
 
@@ -53,7 +54,7 @@ Whenever accepts Javascript style comments
 
 ## Built-in Functions
 
-Whenever.js includes most Whenever standard functions (except U()). In this case, they are called as normal Javascript functions within a statement. For instance:
+Whenever.js includes most Whenever standard functions (except `U()`). In this case, they are called as normal Javascript functions within a statement. For instance:
 
 ```js
 // create monsters statement
@@ -123,6 +124,124 @@ Compile by running:
 ```
 anytime <path/to/file/name.we>
 ```
+
+## Examples
+
+Below are a funny little loop and a translation of [the first 100 Fibonacci numbers from David Morgan-Mar](http://www.dangermouse.net/esoteric/whenever.html). Feel free to PR anything else you make and hopefully I will also add more in the future.
+
+Example script files are also located in the [examples directory](https://github.com/sarahgp/whenever.js/tree/master/examples).
+
+### Silly Loop
+```js
+function teeth() { 
+  console.log('Bite with teeth');
+}
+
+function count() {
+  console.log('teeth', N('teeth'));
+}
+
+function moo() {
+ console.log('moo');
+ theres_a_cow = true;
+
+ add("roof");
+ add("teeth");
+}
+
+function roof() {
+ console.log('roof');
+ theres_a_dog = true;
+
+ if (theres_a_dog) {
+   add("teeth");
+   add("moo");
+ }
+}
+```
+
+### Fibonacci
+```js
+// Fibonacci Adaptation
+
+function one(){
+  // 1 again (1) defer (3 || N(1)<=N(2) || N(7)>99) 2#N(1),3,7;
+  function toDefer(){
+   add('two', N('one'));
+   add('three');
+   add('seven'); 
+  }
+
+  again(N('one') > 0, 'one');
+  defer((N('three') > 0 || N('one') <= N('two') || N('seven') > 99), toDefer, 'one');
+
+}
+
+
+function two(){
+  // 2 again (2) defer (3 || N(2)<=N(1) || N(7)>99) 1#N(2),3,7;
+  function toDeferAgain(){
+    add('one', N('two'));
+    add('three');
+    add('seven');
+  }
+
+  again(N('two') > 0, 'two');
+  defer((N('three') > 0 || N('two') <= N('one') || N('seven') > 99), toDeferAgain, 'two');
+}
+
+function three(){
+  // 3 defer (5) print(N(1)+N(2));
+  defer('five', function(){
+    console.log(N('one') + N('two'));
+  }, 'three');
+}
+
+function four(){
+  // 4 defer (5) print("1");
+  defer('five', function(){
+    console.log('1');
+  }, 'four');
+}
+
+function five(){
+  // 5 4,-3,7;
+  add('four');
+  remove('three');
+  add('seven');
+}
+
+function six(){
+  // 6 defer (4) 3;
+  defer('four', function(){
+    add('three');
+  }, 'six');
+}
+
+function seven(){
+  // 7 7;
+  add('seven');
+}
+
+function eight(){
+  // 8 defer (N(7)<100) -1#N(1),-2#N(2),-7#100,-3;
+  defer((N('seven') < 100 ), function(){
+    remove('one', N('one'));
+    remove('two', N('two'));
+    remove('seven', 100);
+    remove('three');
+  }, 'eight');
+}
+
+function nine(){
+  // 9 defer (3 || 6) 1,3;
+  defer((N('three') > 0 || N('six') > 0), function(){
+    add('one');
+    add('three');
+  }, 'nine');
+}
+```
+
 
 ## License
 [MIT](LICENSE.md)

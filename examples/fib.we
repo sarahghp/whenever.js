@@ -1,16 +1,7 @@
 // Fibonacci Adaptation
-// 1 again (1) defer (3 || N(1)<=N(2) || N(7)>99) 2#N(1),3,7;
-// 2 again (2) defer (3 || N(2)<=N(1) || N(7)>99) 1#N(2),3,7;
-// 3 defer (5) print(N(1)+N(2));
-// 4 defer (5) print("1");
-// 5 4,-3,7;
-// 6 defer (4) 3;
-// 7 7;
-// 8 defer (N(7)<100) -1#N(1),-2#N(2),-7#100,-3;
-// 9 defer (3 || 6) 1,3;
 
 function one(){
-
+  // 1 again (1) defer (3 || N(1)<=N(2) || N(7)>99) 2#N(1),3,7;
   function toDefer(){
    add('two', N('one'));
    add('three');
@@ -24,7 +15,7 @@ function one(){
 
 
 function two(){
-
+  // 2 again (2) defer (3 || N(2)<=N(1) || N(7)>99) 1#N(2),3,7;
   function toDeferAgain(){
     add('one', N('two'));
     add('three');
@@ -37,14 +28,14 @@ function two(){
 
 function three(){
   // 3 defer (5) print(N(1)+N(2));
-  defer(N('five') > 0, function(){
+  defer('five', function(){
     console.log(N('one') + N('two'));
   }, 'three');
 }
 
 function four(){
   // 4 defer (5) print("1");
-  defer(N('five') > 0, function(){
+  defer('five', function(){
     console.log('1');
   }, 'four');
 }
@@ -58,7 +49,7 @@ function five(){
 
 function six(){
   // 6 defer (4) 3;
-  defer(N('four') > 0, function(){
+  defer('four', function(){
     add('three');
   }, 'six');
 }
