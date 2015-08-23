@@ -41,6 +41,17 @@ function convertFn(fn){
   return _.isString(fn) ? getFuncFromString(fn) : fn;
 }
 
+function addCurrStatementToWorkingArr(){
+  if (!currStatement) {
+    return console.log('ERROR: current statement unknown...');
+  }
+
+  if (!addedCurrStatement) {
+    addedCurrStatement = true;
+    workingArr.push(currStatement);  
+  }
+}
+
 function add(fnName, times){
   var times = times || 1;
   
@@ -60,26 +71,22 @@ function remove(fnName, times){
   });
 }
 
-function defer(predicate, fn, statement) {
+function defer(predicate, fn) {
   var fn        = convertFn(fn),
       predicate = convertPredicate(predicate);
 
   if (!predicate) {
     fn();
   } else {
-    if (!addOnce){
-      workingArr.push(statement);
-      addOnce++;
-    }
+    addCurrStatementToWorkingArr();
   }
 }
 
 function again(predicate, fnName){
   var predicate = convertPredicate(predicate);      
 
-  if (predicate && !addOnce){
-    workingArr.push(fnName);
-    addOnce++;
+  if (predicate){
+    addCurrStatementToWorkingArr();
   }
 }
 
@@ -109,13 +116,16 @@ function deStringify(arr) {
 
 function run() {
   while(workingArr.length) {
-    addOnce = 0;
-
     var randIndex = Math.floor(Math.random() * workingArr.length),
         randFn = master[_.pullAt(workingArr, randIndex)[0]].fn;
 
+    // globals used during execution
+    currStatement = randFn.name;
+    addedCurrStatement = false;
+
     randFn();
-    master[randFn.name].timesCalled++;
+
+    master[currStatement].timesCalled++;
   }
 
   console.log('FIN: THE BAG IS EMPTY');

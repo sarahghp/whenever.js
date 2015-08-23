@@ -9,8 +9,7 @@ function one(){
   }
 
   again(N('one') > 0, 'one');
-  defer((N('three') > 0 || N('one') <= N('two') || N('seven') > 99), toDefer, 'one');
-
+  defer((N('three') > 0 || N('one') <= N('two') || N('seven') > 99), toDefer);
 }
 
 
@@ -23,21 +22,21 @@ function two(){
   }
 
   again(N('two') > 0, 'two');
-  defer((N('three') > 0 || N('two') <= N('one') || N('seven') > 99), toDeferAgain, 'two');
+  defer((N('three') > 0 || N('two') <= N('one') || N('seven') > 99), toDeferAgain);
 }
 
 function three(){
   // 3 defer (5) print(N(1)+N(2));
   defer('five', function(){
     console.log(N('one') + N('two'));
-  }, 'three');
+  });
 }
 
 function four(){
   // 4 defer (5) print("1");
   defer('five', function(){
     console.log('1');
-  }, 'four');
+  });
 }
 
 function five(){
@@ -51,7 +50,7 @@ function six(){
   // 6 defer (4) 3;
   defer('four', function(){
     add('three');
-  }, 'six');
+  });
 }
 
 function seven(){
@@ -66,7 +65,7 @@ function eight(){
     remove('two', N('two'));
     remove('seven', 100);
     remove('three');
-  }, 'eight');
+  });
 }
 
 function nine(){
@@ -74,5 +73,5 @@ function nine(){
   defer((N('three') > 0 || N('six') > 0), function(){
     add('one');
     add('three');
-  }, 'nine');
+  });
 }
