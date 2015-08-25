@@ -1,13 +1,13 @@
 start      = statements / other
 
-statements = ff:(function/comment)+ { return ff }
+statements = s:(statement/comment)+ { return s }
 
-function   = space f:( 'function' space name space '(' space ')' space curly ) space 
-             { return [].concat.apply([], f).join('') }
+statement  = space s:( 'function' space name space '(' space ')' space nesting ) space
+             { return [].concat.apply([], s).join('') }
 
-curly      = '{' c:([^{}]/inner)* '}' { return '{' + [].concat.apply([], c).join('') + '}'; }
-
-inner      = ic:(space '{' [^{}]* '}' space) { return [].concat.apply([], ic); }
+nesting    =  n:( '{' block '}' ) { return [].concat.apply([], n).join('') }
+block      =  space b:( body / nesting )+ space { return [].concat.apply([], b).join('') }
+body       = [^{}]+
 
 other      = [^]+ { console.log('That statment is not properly formed. Please check README for help'); }
 
@@ -17,6 +17,5 @@ text       = [a-zA-Z0-9-._]
 space      = [ \n]* / !.
 
 comment    = single / multi
-
 single    = '//' [^\n]* [\n] { return 'comment' }
 multi     = '/*' [^'*/']* '*/' { return 'comment' }
