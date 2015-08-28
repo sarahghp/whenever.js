@@ -36,7 +36,6 @@ function getFuncFromString(str) {
 }
 
 function convertPredicate(pred){
-  // return _.isString(pred) ? _.includes(workingArr, pred) : pred;
   return _.isString(pred) ? master[pred].numCopies > 0 : pred;
 }
 
@@ -53,7 +52,6 @@ function addCurrStatement(){
     addedCurrStatement = true;
     master[currStatement].numCopies++;
     sumStatements++;
-    // workingArr.push(currStatement);
   }
 }
 
@@ -63,9 +61,9 @@ function getStatement(num){
       index = 0,
       counter = master[keys[index]].numCopies;
 
-  while (counter < num) {
-    counter += master[keys[index]].numCopies;
+  while (counter <= num) {
     index++;
+    counter += master[keys[index]].numCopies;
   }
 
   return master[keys[index]].fn;
@@ -77,23 +75,12 @@ function add(fnName, times){
   var times = times || 1;
   master[fnName].numCopies += times;
   sumStatements += times;
-  
-  // _.times(times, function(){
-  //   workingArr.push(fnName);
-  // });
 }
 
 function remove(fnName, times){
   var times = times || 1;
   master[fnName].numCopies -= times;
   sumStatements -= times;
-  // _.times(times, function(){
-  //   var idx = _.findIndex(workingArr, function(el){
-  //     return el === fnName;
-  //   });
-
-  //   workingArr.splice(idx, 1);
-  // });
 }
 
 function defer(predicate, fn) {
@@ -142,12 +129,9 @@ function deStringifyAndRun(arr) {
 
 function run() {
   while(sumStatements > 0) {
-    console.log('sumStatements', sumStatements)
+
     var randIndex = Math.floor(Math.random() * sumStatements), 
         randFn = getStatement(randIndex);
-
-    console.log('randIndex', randIndex);
-    console.log('randFn', randFn.name);
 
     // globals used during execution
     currStatement = randFn.name;
@@ -155,9 +139,11 @@ function run() {
 
     randFn();
 
+    // update counting properties
     master[currStatement].numCopies--;
     sumStatements--;
     master[currStatement].timesCalled++;
+
   }
 
   console.log('FIN: THE BAG IS EMPTY');
