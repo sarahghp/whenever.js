@@ -26,8 +26,7 @@ var grammar = fs.readFileSync(__dirname + '/lib/grammar.txt').toString(),
 
 // Built-in whenever funcs
 
-var master = {},
-    addOnce = 0;
+var master = {};
 
 function getFuncFromString(str) {
   return master[str].fn;
