@@ -24,7 +24,7 @@ var grammar = fs.readFileSync(__dirname + '/lib/grammar.txt').toString(),
 
 // console.log(bag);
 
-// Built-in whenever funcs
+// Start Whenevering!
 
 var master = {},
     sumStatements = 0,
@@ -61,15 +61,16 @@ function getStatement(num){
       index = 0,
       counter = master[keys[index]].numCopies;
 
-  while (counter <= num) {
+  while (counter < num) {
     index++;
-    counter += master[keys[index]].numCopies;
+    counter += master[keys[index]].numCopies
   }
 
   return master[keys[index]].fn;
 
 }
 
+// Built-in whenever funcs
 
 function add(fnName, times){
   var times = times || 1;
@@ -108,7 +109,7 @@ function N(fnName) {
 }
 
 
-// Start whenevering!
+// Ready, set ...
  
 function deStringifyAndRun(arr) {
   var cleaned = _.pull(arr, 'comment');
@@ -130,7 +131,7 @@ function deStringifyAndRun(arr) {
 function run() {
   while(sumStatements > 0) {
 
-    var randIndex = Math.floor(Math.random() * sumStatements), 
+    var randIndex = Math.ceil(Math.random() * sumStatements), 
         randFn = getStatement(randIndex);
 
     // globals used during execution
@@ -150,6 +151,6 @@ function run() {
 }
 
 
-// ACTION
+// Go!
 
 deStringifyAndRun(bag);
