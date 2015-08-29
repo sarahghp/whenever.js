@@ -24,51 +24,64 @@ var grammar = fs.readFileSync(__dirname + '/lib/grammar.txt').toString(),
 
 // console.log(bag);
 
-// Built-in whenever funcs
+// Start Whenevering!
 
 var master = {},
-    addOnce = 0;
+    sumStatements = 0,
+    addedCurrStatement,
+    currStatement;
 
 function getFuncFromString(str) {
   return master[str].fn;
 }
 
 function convertPredicate(pred){
-  return _.isString(pred) ? _.includes(workingArr, pred) : pred;
+  return _.isString(pred) ? master[pred].numCopies > 0 : pred;
 }
 
 function convertFn(fn){
   return _.isString(fn) ? getFuncFromString(fn) : fn;
 }
 
-function addCurrStatementToWorkingArr(){
+function addCurrStatement(){
   if (!currStatement) {
     return console.log('ERROR: current statement unknown...');
   }
 
   if (!addedCurrStatement) {
     addedCurrStatement = true;
-    workingArr.push(currStatement);  
+    master[currStatement].numCopies++;
+    sumStatements++;
   }
 }
 
+function getStatement(num){
+
+  var keys = Object.keys(master),
+      index = 0,
+      counter = master[keys[index]].numCopies;
+
+  while (counter < num) {
+    index++;
+    counter += master[keys[index]].numCopies
+  }
+
+  return master[keys[index]].fn;
+
+}
+
+// Built-in whenever funcs
+
 function add(fnName, times){
   var times = times || 1;
-  
-  _.times(times, function(){
-    workingArr.push(fnName);
-  });
+  master[fnName].numCopies += times;
+  sumStatements += times;
 }
 
 function remove(fnName, times){
   var times = times || 1;
-  _.times(times, function(){
-    var idx = _.findIndex(workingArr, function(el){
-      return el === fnName;
-    });
-
-    workingArr.splice(idx, 1);
-  });
+  master[fnName].numCopies -= times;
+  sumStatements -= times;
 }
 
 function defer(predicate, fn) {
@@ -78,7 +91,7 @@ function defer(predicate, fn) {
   if (!predicate) {
     fn();
   } else {
-    addCurrStatementToWorkingArr();
+    addCurrStatement();
   }
 }
 
@@ -86,38 +99,40 @@ function again(predicate, fnName){
   var predicate = convertPredicate(predicate);      
 
   if (predicate){
-    addCurrStatementToWorkingArr();
+    addCurrStatement();
   }
 }
 
 
 function N(fnName) {
- return _.filter(workingArr, function(el){
-  return el === fnName;
- }).length;
+  return master[fnName].numCopies;
 }
 
 
-// Start whenevering!
+// Ready, set ...
  
-function deStringify(arr) {
+function deStringifyAndRun(arr) {
   var cleaned = _.pull(arr, 'comment');
+
+  sumStatements = cleaned.length;
 
   _.forEach(cleaned, function(el){
     eval('var moo = ' + el);
     master[moo.name] = {
       fn: moo,
-      timesCalled: 0
+      timesCalled: 0,
+      numCopies: 1
     };
   });
 
-  return Object.keys(master);
+  run();
 }
 
 function run() {
-  while(workingArr.length) {
-    var randIndex = Math.floor(Math.random() * workingArr.length),
-        randFn = master[_.pullAt(workingArr, randIndex)[0]].fn;
+  while(sumStatements > 0) {
+
+    var randIndex = Math.ceil(Math.random() * sumStatements), 
+        randFn = getStatement(randIndex);
 
     // globals used during execution
     currStatement = randFn.name;
@@ -125,14 +140,17 @@ function run() {
 
     randFn();
 
+    // update counting properties
+    master[currStatement].numCopies--;
+    sumStatements--;
     master[currStatement].timesCalled++;
+
   }
 
   console.log('FIN: THE BAG IS EMPTY');
 }
 
 
-// ACTION
+// Go!
 
-var workingArr = deStringify(bag); // this mutates and is not to be trusted!
-run();
+deStringifyAndRun(bag);
