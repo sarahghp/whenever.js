@@ -80,8 +80,11 @@ function add(fnName, times){
 
 function remove(fnName, times){
   var times = times || 1;
-  master[fnName].numCopies -= times;
-  sumStatements -= times;
+
+  if (master[fnName].numCopies > 0){
+    master[fnName].numCopies -= times;
+    sumStatements -= times;
+  }
 }
 
 function defer(predicate, fn) {
@@ -138,12 +141,11 @@ function run() {
     currStatement = randFn.name;
     addedCurrStatement = false;
 
-    randFn();
-
-    // update counting properties
-    master[currStatement].numCopies--;
-    sumStatements--;
+    // update counting properties (this *must* occur before calling fn)
+    remove(currStatement);
     master[currStatement].timesCalled++;
+
+    randFn();
 
   }
 
